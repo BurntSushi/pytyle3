@@ -4,15 +4,15 @@ from xpybutil import conn, root
 import xpybutil.event as event
 
 # Do initial startup stuff
-import pytylemh.state as state
+import pt3.state as state
 
 # Bind keys
-import pytylemh.keybind as keybind
+import pt3.keybind as keybind
 
-import pytylemh.tile as tile
+import pt3.tile as tile
 
 # Startup client management
-import pytylemh.client as client
+import pt3.client as client
 
 tile.update_tilers()
 client.update_clients()

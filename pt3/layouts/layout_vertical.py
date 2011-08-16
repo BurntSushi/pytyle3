@@ -1,9 +1,9 @@
 from xpybutil import conn, root
 
-from pytylemh.debug import debug
+from pt3.debug import debug
 
-import pytylemh.client as client
-import pytylemh.state as state
+import pt3.client as client
+import pt3.state as state
 import store
 
 class VerticalLayout(object):

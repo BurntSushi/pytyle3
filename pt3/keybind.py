@@ -6,7 +6,7 @@ import xpybutil.keysym as keysym
 
 bindings = None
 
-execfile('pytylemh/userkeybind.py')
+execfile('pt3/userkeybind.py')
 
 assert bindings is not None, \
        'No keybindings were found'
