@@ -1,0 +1,25 @@
+#!/usr/bin/env python2
+
+from xpybutil import conn, root
+import xpybutil.event as event
+
+# Do initial startup stuff
+import pytylemh.state as state
+
+# Bind keys
+import pytylemh.keybind as keybind
+
+import pytylemh.tile as tile
+
+# Startup client management
+import pytylemh.client as client
+
+tile.update_tilers()
+client.update_clients()
+
+# Get those juices flowing...
+state.PYTYLE_STATE = 'running'
+
+# Start the event loop
+event.event_loop(conn)
+

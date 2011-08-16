@@ -1,0 +1,12 @@
+It should be as straight-forward as
+
+  sudo python2 setup.py install
+
+Two configuration files, config.py and keymousebind.py will be copied to 
+/etc/xdg/pager-multihead. 
+
+To configure pager-multihead on a user basis, create ~/.config/pager-multihead
+and copy /etc/xdg/pager-multihead/*py to that directory.
+
+pager-multihead will require a restart if the configuration has changed.
+
