@@ -8,6 +8,7 @@ from xpybutil import conn, root
 import xpybutil.event as event
 import xpybutil.ewmh as ewmh
 import xpybutil.icccm as icccm
+import xpybutil.keysym as keysym
 import xpybutil.util as util
 import xpybutil.window as window
 import xpybutil.xinerama as xinerama
@@ -22,14 +23,19 @@ clients = {}
 ignore = [] # Some clients are never gunna make it...
 
 class Client(object):
+    def __del__(self):
+        debug('Destroy %s' % self)
+
     def __init__(self, wid):
         self.wid = wid
 
         self.name = ewmh.get_wm_name(conn, self.wid).reply()
         debug('Connecting to %s' % self)
 
-        window.listen(conn, self.wid, ['PropertyChange'])
+        window.listen(conn, self.wid, ['PropertyChange', 'FocusChange'])
         event.connect('PropertyNotify', self.wid, self.cb_property_notify)
+        event.connect('FocusIn', self.wid, self.cb_focus_in)
+        event.connect('FocusOut', self.wid, self.cb_focus_out)
 
         # This connects to the parent window (decorations)
         # We get all resize AND move events... might be too much
@@ -40,6 +46,9 @@ class Client(object):
 
         # A window should only be floating if specifically specified
         self.floating = False
+
+        # Not currently in a "moving" state
+        self.moving = False
 
         # Load some data
         self.desk = ewmh.get_wm_desktop(conn, self.wid).reply()
@@ -55,6 +64,8 @@ class Client(object):
         debug('Disconnecting from %s' % self)
         event.disconnect('ConfigureNotify', self.parentid)
         event.disconnect('PropertyNotify', self.wid)
+        event.disconnect('FocusIn', self.wid)
+        event.disconnect('FocusOut', self.wid)
 
     def activate(self):
         ewmh.request_active_window_checked(conn, self.wid, source=1).check()
@@ -111,11 +122,40 @@ class Client(object):
         window.moveresize(conn, self.wid, x, y, w, h)
 
     def moveresize(self, x=None, y=None, w=None, h=None):
-        window.moveresize(conn, self.wid, x, y, w, h)
+        # Ignore this if the user is moving the window...
+        if self.moving:
+            print 'Sorry but %s is moving...' % self
+            return
+
+        try:
+            window.moveresize(conn, self.wid, x, y, w, h)
+        except xcb.xproto.BadWindow:
+            pass
+
+    def is_button_pressed(self):
+        pointer = conn.core.QueryPointer(self.wid).reply()
+        if pointer is None:
+            return False
+
+        if (xcb.xproto.KeyButMask.Button1 & pointer.mask or
+            xcb.xproto.KeyButMask.Button3 & pointer.mask):
+            return True
+
+        return False
+
+    def cb_focus_in(self, e):
+        if self.moving and e.mode == xcb.xproto.NotifyMode.Ungrab:
+            state.GRAB = None
+            self.moving = False
+            tile.update_client_moved(self)
+
+    def cb_focus_out(self, e):
+        if e.mode == xcb.xproto.NotifyMode.Grab:
+            state.GRAB = self
 
     def cb_configure_notify(self, e):
-        # print 'configure notify' 
-        sys.stdout.flush()
+        if state.GRAB is self and self.is_button_pressed():
+            self.moving = True
 
     def cb_property_notify(self, e):
         aname = util.get_atom_name(conn, e.atom)

@@ -36,9 +36,27 @@ def cmd(action):
                     c.unmaximize()
             tiler.tile()
         elif tiler.tiling:
-            getattr(tiler, action)()
+            if action == 'cycle':
+                cycle_current_tiler()
+            else:
+                getattr(tiler, action)()
 
     return _cmd
+
+def cycle_current_tiler():
+    assert state.desktop in tilers
+
+    tiler, i = get_active_tiler(state.desktop)
+    newtiler = tilers[state.desktop][(i + 1) % len(tilers[state.desktop])]
+
+    tiler.active = False
+    newtiler.active = True
+
+    debug('Switching tiler from %s to %s on desktop %d' % (
+           tiler.__class__.__name__, newtiler.__class__.__name__, 
+           state.desktop))
+
+    newtiler.tile()
 
 def get_active_tiler(desk):
     assert desk in tilers
@@ -46,6 +64,13 @@ def get_active_tiler(desk):
     for i, tiler in enumerate(tilers[desk]):
         if tiler.active:
             return tiler, i
+
+def update_client_moved(c):
+    assert c.desk in tilers
+
+    tiler, _ = get_active_tiler(c.desk)
+    if tiler.tiling:
+        tiler.tile()
 
 def update_client_desktop(c, olddesk):
     assert c.desk in tilers
@@ -72,6 +97,7 @@ def update_client_removal(c):
 def update_tilers():
     for d in xrange(state.desk_num):
         if d not in tilers:
+            debug('Adding tilers to desktop %d' % d)
             tilers[d] = []
             for lay in layouts:
                 t = lay(d)
@@ -79,6 +105,7 @@ def update_tilers():
             tilers[d][0].active = True
     for d in tilers.keys():
         if d >= state.desk_num:
+            debug('Removing tilers from desktop %d' % d)
             del tilers[d]
 
 def cb_property_notify(e):

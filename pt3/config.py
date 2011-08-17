@@ -1,1 +1,2 @@
-debug = True
+execfile('pt3/userconfig.py')
+

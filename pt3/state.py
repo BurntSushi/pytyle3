@@ -12,6 +12,7 @@ import xpybutil.xinerama as xinerama
 import rect
 
 PYTYLE_STATE = 'startup'
+GRAB = None
 
 util.build_atom_cache(conn, ewmh)
 

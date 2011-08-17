@@ -17,7 +17,8 @@ kbmap = keysym.get_keyboard_mapping(conn).reply()
 for key_string, fun in bindings.iteritems():
     mods, keycode = keysym.parse_keystring(conn, key_string, kbmap)
     _keybindmap[(mods, keycode)] = fun
-    keysym.grab_key(conn, root, mods, keycode)
+    if not keysym.grab_key(conn, root, mods, keycode):
+        print >> sys.stderr, 'Could not bind %s' % key_string
 
 def cb_key_press(e):
     sys.stdout.flush()
