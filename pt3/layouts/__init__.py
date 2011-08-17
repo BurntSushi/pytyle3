@@ -19,7 +19,7 @@ class Layout(object):
 
     @abc.abstractmethod
     def tile(self, save=True):
-        if not self.active and self.desk not in state.visibles:
+        if not self.active or self.desk not in state.visibles:
             return False
 
         if not self.tiling and save:
