@@ -1,5 +1,5 @@
 #==============================================================================
-# xpybutil - An incomplete xcb-util port plus some extras
+# pytyle3 - An incomplete xcb-util port plus some extras
 # Copyright (C) 2009-2010  Andrew Gallant <andrew@pytyle.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -28,42 +28,24 @@ try:
     import xpybutil
 except:
     print ''
-    print 'pager-multihead requires xpybutil'
+    print 'pytyle3 requires xpybutil'
     print 'See: https://github.com/BurntSushi/xpybutil'
     sys.exit(1)
 
-try:
-    import pygtk
-    pygtk.require('2.0')
-    import gtk
-except:
-    print ''
-    print 'pager-multihead requires pygtk'
-    print 'See: http://www.pygtk.org/'
-    sys.exit(1)
-
-try:
-    import keybinder
-except:
-    print ''
-    print 'pager-multihead requiers python-keybinder'
-    print 'See: http://kaizer.se/wiki/keybinder/'
-    sys.exit(1)
-
 setup(
-    name = 'pager-multihead',
+    name = 'pytyle3',
     author = 'Andrew Gallant',
     author_email = 'andrew@pytyle.com',
-    version = '0.0.1',
+    version = '3.0.0',
     license = 'GPL',
-    description = 'A pager that supports per-monitor desktops',
+    description = 'A new and much more lightweight pytyle that supports Openbox Multihead',
     long_description = 'See README',
-    url = 'https://github.com/BurntSushi/pager-mutlihead',
+    url = 'https://github.com/BurntSushi/pytyle3',
     platforms = 'POSIX',
-    packages = ['pagermh'],
-    data_files = [('share/doc/pager-multihead', ['README', 'LICENSE']),
-                  ('/etc/xdg/pager-multihead', 
-                   ['config.py', 'keymousebind.py'])],
-    scripts = ['pager-multihead']
+    packages = ['pt3'],
+    data_files = [('share/doc/pytyle3', ['README', 'LICENSE']),
+                  ('/etc/xdg/pytyle3', 
+                   ['config.py', 'keybind.py'])],
+    scripts = ['pytyle3']
 )
 
