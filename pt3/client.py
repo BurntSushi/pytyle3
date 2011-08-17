@@ -128,7 +128,7 @@ class Client(object):
 
         try:
             window.moveresize(conn, self.wid, x, y, w, h)
-        except xcb.xproto.BadWindow, xcb.xproto.BadDrawable:
+        except:
             pass
 
     def is_button_pressed(self):
