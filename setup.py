@@ -42,7 +42,7 @@ setup(
     long_description = 'See README',
     url = 'https://github.com/BurntSushi/pytyle3',
     platforms = 'POSIX',
-    packages = ['pt3'],
+    packages = ['pt3', 'pt3/layouts'],
     data_files = [('share/doc/pytyle3', ['README', 'LICENSE']),
                   ('/etc/xdg/pytyle3', 
                    ['config.py', 'keybind.py'])],
