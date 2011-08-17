@@ -1,9 +1,16 @@
 #!/usr/bin/env python2
 
+import sys
+
 from xpybutil import conn, root
 import xpybutil.event as event
 
 import pt3.config as config
+
+# Perhaps we want to debug...
+if '--debug' in sys.argv:
+    config.debug = True
+
 import pt3.state as state
 import pt3.keybind as keybind
 import pt3.tile as tile
