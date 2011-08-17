@@ -3,15 +3,10 @@
 from xpybutil import conn, root
 import xpybutil.event as event
 
-# Do initial startup stuff
+import pt3.config as config
 import pt3.state as state
-
-# Bind keys
 import pt3.keybind as keybind
-
 import pt3.tile as tile
-
-# Startup client management
 import pt3.client as client
 
 tile.update_tilers()

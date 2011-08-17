@@ -15,6 +15,7 @@ import xpybutil.xinerama as xinerama
 
 from debug import debug
 
+import config
 import rect
 import state
 import tile
@@ -23,13 +24,10 @@ clients = {}
 ignore = [] # Some clients are never gunna make it...
 
 class Client(object):
-    def __del__(self):
-        debug('Destroy %s' % self)
-
     def __init__(self, wid):
         self.wid = wid
 
-        self.name = ewmh.get_wm_name(conn, self.wid).reply()
+        self.name = ewmh.get_wm_name(conn, self.wid).reply() or 'N/A'
         debug('Connecting to %s' % self)
 
         window.listen(conn, self.wid, ['PropertyChange', 'FocusChange'])
@@ -45,6 +43,7 @@ class Client(object):
                       self.cb_configure_notify)
 
         # A window should only be floating if specifically specified
+        # XXX: Not implemented. Maybe never will be..?
         self.floating = False
 
         # Not currently in a "moving" state
@@ -133,13 +132,16 @@ class Client(object):
             pass
 
     def is_button_pressed(self):
-        pointer = conn.core.QueryPointer(self.wid).reply()
-        if pointer is None:
-            return False
+        try:
+            pointer = conn.core.QueryPointer(self.wid).reply()
+            if pointer is None:
+                return False
 
-        if (xcb.xproto.KeyButMask.Button1 & pointer.mask or
-            xcb.xproto.KeyButMask.Button3 & pointer.mask):
-            return True
+            if (xcb.xproto.KeyButMask.Button1 & pointer.mask or
+                xcb.xproto.KeyButMask.Button3 & pointer.mask):
+                return True
+        except xcb.xproto.BadWindow:
+            pass
 
         return False
 
@@ -219,27 +221,39 @@ def should_ignore(client):
 
     nm = ewmh.get_wm_name(conn, client).reply()
 
+    wm_class = icccm.get_wm_class(conn, client).reply()
+    if wm_class is not None:
+        inst, cls = wm_class
+        if set([inst.lower(), cls.lower()]).intersection(config.ignore):
+            debug('Ignoring %s because it is in the ignore list' % nm)
+            return True
+
     if icccm.get_wm_transient_for(conn, client).reply() is not None:
         debug('Ignoring %s because it is transient' % nm)
         ignore.append(client)
         return True
 
     wtype = ewmh.get_wm_window_type(conn, client).reply()
-    for atom in wtype:
-        aname = util.get_atom_name(conn, atom)
+    if wtype:
+        for atom in wtype:
+            aname = util.get_atom_name(conn, atom)
 
-        if aname in ('_NET_WM_WINDOW_TYPE_DESKTOP', '_NET_WM_WINDOW_TYPE_DOCK',
-                     '_NET_WM_WINDOW_TYPE_TOOLBAR', '_NET_WM_WINDOW_TYPE_MENU',
-                     '_NET_WM_WINDOW_TYPE_UTILITY',
-                     '_NET_WM_WINDOW_TYPE_SPLASH', '_NET_WM_WINDOW_TYPE_DIALOG',
-                     '_NET_WM_WINDOW_TYPE_DROPDOWN_MENU',
-                     '_NET_WM_WINDOW_TYPE_POPUP_MENU',
-                     '_NET_WM_WINDOW_TYPE_TOOLTIP',
-                     '_NET_WM_WINDOW_TYPE_NOTIFICATION',
-                     '_NET_WM_WINDOW_TYPE_COMBO', '_NET_WM_WINDOW_TYPE_DND'):
-            debug('Ignoring %s because it has type %s' % (nm, aname))
-            ignore.append(client)
-            return True
+            if aname in ('_NET_WM_WINDOW_TYPE_DESKTOP',
+                         '_NET_WM_WINDOW_TYPE_DOCK',
+                         '_NET_WM_WINDOW_TYPE_TOOLBAR',
+                         '_NET_WM_WINDOW_TYPE_MENU',
+                         '_NET_WM_WINDOW_TYPE_UTILITY',
+                         '_NET_WM_WINDOW_TYPE_SPLASH',
+                         '_NET_WM_WINDOW_TYPE_DIALOG',
+                         '_NET_WM_WINDOW_TYPE_DROPDOWN_MENU',
+                         '_NET_WM_WINDOW_TYPE_POPUP_MENU',
+                         '_NET_WM_WINDOW_TYPE_TOOLTIP',
+                         '_NET_WM_WINDOW_TYPE_NOTIFICATION',
+                         '_NET_WM_WINDOW_TYPE_COMBO', 
+                         '_NET_WM_WINDOW_TYPE_DND'):
+                debug('Ignoring %s because it has type %s' % (nm, aname))
+                ignore.append(client)
+                return True
 
     wstate = ewmh.get_wm_state(conn, client).reply()
     if wstate is None:

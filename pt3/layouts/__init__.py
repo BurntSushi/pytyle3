@@ -18,7 +18,18 @@ class Layout(object):
     def remove(self, c): pass
 
     @abc.abstractmethod
-    def tile(self): pass
+    def tile(self, save=True):
+        if not self.active and self.desk not in state.visibles:
+            return False
+
+        if not self.tiling and save:
+            for c in self.clients():
+                c.save()
+                c.unmaximize()
+
+        self.tiling = True
+
+        return True
 
     @abc.abstractmethod
     def untile(self): pass
@@ -35,6 +46,9 @@ class Layout(object):
     @abc.abstractmethod
     def switch_prev_client(self): pass
 
+    @abc.abstractmethod
+    def clients(self): pass
+
     def get_workarea(self):
         if self.desk not in state.visibles:
             return None
@@ -49,10 +63,12 @@ class Layout(object):
             wastr = 'which isn\'t visible'
         else:
             wx, wy, ww, wh = wa
-            wastr = 'with workarea (%d, %d) %dx%d' % (wx, wy, ww, wh)
+            wastr = '%dx%d+%d+%d' % (ww, wh, wx, wy)
 
-        return '%s on desktop %d %s' % (
-                    self.__class__.__name__, self.desk, wastr)
+        istiling = '- TILING' if self.tiling else ''
+
+        return '%s (desk %d) %s%s' % (
+                    self.__class__.__name__, self.desk, wastr, istiling)
 
 from layout_vert_horz import VerticalLayout, HorizontalLayout
 

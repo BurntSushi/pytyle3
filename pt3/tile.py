@@ -7,6 +7,7 @@ import xpybutil.util as util
 
 from debug import debug
 
+import config
 import state
 import client
 from layouts import layouts
@@ -30,10 +31,6 @@ def cmd(action):
         tiler, _ = get_active_tiler(state.desktop)
 
         if action == 'tile':
-            if not tiler.tiling:
-                for c in tiler.store.masters + tiler.store.slaves:
-                    c.save()
-                    c.unmaximize()
             tiler.tile()
         elif tiler.tiling:
             if action == 'cycle':
@@ -56,7 +53,7 @@ def cycle_current_tiler():
            tiler.__class__.__name__, newtiler.__class__.__name__, 
            state.desktop))
 
-    newtiler.tile()
+    newtiler.tile(save=False)
 
 def get_active_tiler(desk):
     assert desk in tilers

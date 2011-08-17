@@ -2,6 +2,7 @@ from xpybutil import conn, root
 
 from pt3.debug import debug
 
+import pt3.config as config
 import pt3.client as client
 import pt3.state as state
 from pt3.layouts import Layout
@@ -63,14 +64,17 @@ class OrientLayout(Layout):
             self.store.switch(awin, prv)
             self.tile()
 
+    def clients(self):
+        return self.store.masters + self.store.slaves
+
     # End abstract methods; begin OrientLayout specific methods
 
     def decrease_master(self):
-        self.proportion = max(0.0, self.proportion - 0.02)
+        self.proportion = max(0.0, self.proportion - config.proportion_change)
         self.tile()
 
     def increase_master(self):
-        self.proportion = min(1.0, self.proportion + 0.02)
+        self.proportion = min(1.0, self.proportion + config.proportion_change)
         self.tile()
 
     def add_master(self):
@@ -163,11 +167,9 @@ class OrientLayout(Layout):
         return prv
 
 class VerticalLayout(OrientLayout):
-    def tile(self):
-        if not self.active or self.desk not in state.visibles:
+    def tile(self, save=True):
+        if not super(VerticalLayout, self).tile(save):
             return
-
-        self.tiling = True
 
         wx, wy, ww, wh = self.get_workarea()
         msize = len(self.store.masters)
@@ -200,11 +202,9 @@ class VerticalLayout(OrientLayout):
         conn.flush()
 
 class HorizontalLayout(OrientLayout):
-    def tile(self):
-        if not self.active or self.desk not in state.visibles:
+    def tile(self, save=True):
+        if not super(HorizontalLayout, self).tile(save):
             return
-
-        self.tiling = True
 
         wx, wy, ww, wh = self.get_workarea()
         msize = len(self.store.masters)
