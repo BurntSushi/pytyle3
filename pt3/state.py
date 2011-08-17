@@ -45,7 +45,7 @@ monitors = xinerama.get_monitors()
 desk_num = ewmh.get_number_of_desktops(conn, root).reply()
 activewin = ewmh.get_active_window(conn, root).reply()
 desktop = ewmh.get_current_desktop(conn, root).reply()
-visibles = ewmh.get_visible_desktops(conn, root).reply()
+visibles = ewmh.get_visible_desktops(conn, root).reply() or [desktop]
 stacking = ewmh.get_client_list_stacking(conn, root).reply()
 workarea = []
 
