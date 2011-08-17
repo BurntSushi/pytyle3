@@ -47,6 +47,7 @@ def cycle_current_tiler():
     newtiler = tilers[state.desktop][(i + 1) % len(tilers[state.desktop])]
 
     tiler.active = False
+    tiler.tiling = False
     newtiler.active = True
 
     debug('Switching tiler from %s to %s on desktop %d' % (
