@@ -64,7 +64,7 @@ def cb_property_notify(e):
         activewin = ewmh.get_active_window(conn, root).reply()
     elif aname == '_NET_CURRENT_DESKTOP':
         desktop = ewmh.get_current_desktop(conn, root).reply()
-        if visibles is None:
+        if visibles is None or len(visibles) == 1:
             visibles = [desktop]
     elif aname == '_NET_VISIBLE_DESKTOPS':
         visibles = ewmh.get_visible_desktops(conn, root).reply()

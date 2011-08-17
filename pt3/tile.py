@@ -111,6 +111,11 @@ def cb_property_notify(e):
 
     if aname == '_NET_NUMBER_OF_DESKTOPS':
         update_tilers()
+    elif aname == '_NET_CURRENT_DESKTOP':
+        if len(state.visibles) == 1:
+            tiler, _ = get_active_tiler(state.desktop)
+            if tiler.tiling:
+                tiler.tile()
     elif aname == '_NET_VISIBLE_DESKTOPS':
         for d in state.visibles:
             tiler, _ = get_active_tiler(d)
