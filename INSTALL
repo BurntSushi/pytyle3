@@ -2,11 +2,11 @@ It should be as straight-forward as
 
   sudo python2 setup.py install
 
-Two configuration files, config.py and keymousebind.py will be copied to 
-/etc/xdg/pager-multihead. 
+Two configuration files, config.py and keybind.py will be copied to 
+/etc/xdg/pytyle3. 
 
-To configure pager-multihead on a user basis, create ~/.config/pager-multihead
-and copy /etc/xdg/pager-multihead/*py to that directory.
+To configure pytyle3 on a user basis, create ~/.config/pytyle3 and copy 
+/etc/xdg/pytyle3/*py to that directory.
 
-pager-multihead will require a restart if the configuration has changed.
+pytyle3 will require a restart if the configuration has changed.
 
