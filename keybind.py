@@ -17,6 +17,6 @@ bindings = {
     'Mod1-z':       tile.cmd('cycle'),
 
     'Mod1-q':       tile.debug_state,
-    'Control-c':    state.quit,
+    'Mod1-Shift-q': state.quit,
 }
 
