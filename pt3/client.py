@@ -204,7 +204,10 @@ def track_client(client):
             # a client comes back from an iconified state. This causes a slight
             # lag when a new window is mapped, though.
             time.sleep(0.2)
-        clients[client] = Client(client)
+        try:
+            clients[client] = Client(client)
+        except xcb.xproto.BadWindow:
+            untrack_client(client)
 
 def untrack_client(client):
     if client not in clients:
