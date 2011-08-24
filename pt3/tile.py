@@ -1,7 +1,7 @@
 import sys
 import traceback
 
-from xpybutil import conn, root
+import xpybutil
 import xpybutil.event as event
 import xpybutil.util as util
 
@@ -107,7 +107,7 @@ def update_tilers():
             del tilers[d]
 
 def cb_property_notify(e):
-    aname = util.get_atom_name(conn, e.atom)
+    aname = util.get_atom_name(e.atom)
 
     if aname == '_NET_NUMBER_OF_DESKTOPS':
         update_tilers()
@@ -122,5 +122,5 @@ def cb_property_notify(e):
             if tiler.tiling:
                 tiler.tile()
 
-event.connect('PropertyNotify', root, cb_property_notify)
+event.connect('PropertyNotify', xpybutil.root, cb_property_notify)
 

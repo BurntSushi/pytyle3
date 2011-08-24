@@ -1,7 +1,7 @@
 import sys
 import time
 
-from xpybutil import conn, root
+import xpybutil
 import xpybutil.event as event
 import xpybutil.ewmh as ewmh
 import xpybutil.keysym as keysym
@@ -14,19 +14,17 @@ import rect
 PYTYLE_STATE = 'startup'
 GRAB = None
 
-util.build_atom_cache(conn, ewmh)
-
 _wmrunning = False
 
 wm = 'N/A'
 utilwm = window.WindowManagers.Unknown
 while not _wmrunning:
-    w = ewmh.get_supporting_wm_check(conn, root).reply()
+    w = ewmh.get_supporting_wm_check(xpybutil.root).reply()
     if w:
-        childw = ewmh.get_supporting_wm_check(conn, w).reply()
+        childw = ewmh.get_supporting_wm_check(w).reply()
         if childw == w:
             _wmrunning = True
-            wm = ewmh.get_wm_name(conn, childw).reply()
+            wm = ewmh.get_wm_name(childw).reply()
             if wm.lower() == 'openbox':
                 utilwm = window.WindowManagers.Openbox
             elif wm.lower() == 'kwin':
@@ -38,15 +36,13 @@ while not _wmrunning:
     if not _wmrunning:
         time.sleep(1)
 
-xinerama.init(conn)
-
-root_geom = ewmh.get_desktop_geometry(conn, root).reply()
+root_geom = ewmh.get_desktop_geometry().reply()
 monitors = xinerama.get_monitors()
-desk_num = ewmh.get_number_of_desktops(conn, root).reply()
-activewin = ewmh.get_active_window(conn, root).reply()
-desktop = ewmh.get_current_desktop(conn, root).reply()
-visibles = ewmh.get_visible_desktops(conn, root).reply() or [desktop]
-stacking = ewmh.get_client_list_stacking(conn, root).reply()
+desk_num = ewmh.get_number_of_desktops().reply()
+activewin = ewmh.get_active_window().reply()
+desktop = ewmh.get_current_desktop().reply()
+visibles = ewmh.get_visible_desktops().reply() or [desktop]
+stacking = ewmh.get_client_list_stacking().reply()
 workarea = []
 
 def quit():
@@ -56,27 +52,27 @@ def quit():
 def cb_property_notify(e):
     global activewin, desk_num, desktop, monitors, root_geom, stacking, visibles
 
-    aname = util.get_atom_name(conn, e.atom)
+    aname = util.get_atom_name(e.atom)
     if aname == '_NET_DESKTOP_GEOMETRY':
-        root_geom = ewmh.get_desktop_geometry(conn, root).reply()
+        root_geom = ewmh.get_desktop_geometry().reply()
         monitors = xinerama.get_monitors()
     elif aname == '_NET_ACTIVE_WINDOW':
-        activewin = ewmh.get_active_window(conn, root).reply()
+        activewin = ewmh.get_active_window().reply()
     elif aname == '_NET_CURRENT_DESKTOP':
-        desktop = ewmh.get_current_desktop(conn, root).reply()
+        desktop = ewmh.get_current_desktop().reply()
         if visibles is None or len(visibles) == 1:
             visibles = [desktop]
     elif aname == '_NET_VISIBLE_DESKTOPS':
-        visibles = ewmh.get_visible_desktops(conn, root).reply()
+        visibles = ewmh.get_visible_desktops().reply()
     elif aname == '_NET_NUMBER_OF_DESKTOPS':
-        desk_num = ewmh.get_number_of_desktops(conn, root).reply()
+        desk_num = ewmh.get_number_of_desktops().reply()
     elif aname == '_NET_CLIENT_LIST_STACKING':
-        stacking = ewmh.get_client_list_stacking(conn, root).reply()
+        stacking = ewmh.get_client_list_stacking().reply()
     elif aname == '_NET_WORKAREA':
         rect.update_workarea()
 
-window.listen(conn, root, ['PropertyChange'])
-event.connect('PropertyNotify', root, cb_property_notify)
+window.listen(xpybutil.root, 'PropertyChange')
+event.connect('PropertyNotify', xpybutil.root, cb_property_notify)
 
 rect.update_workarea()
 

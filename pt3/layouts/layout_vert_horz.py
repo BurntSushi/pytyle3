@@ -1,4 +1,4 @@
-from xpybutil import conn, root
+import xpybutil
 
 from pt3.debug import debug
 
@@ -34,7 +34,7 @@ class OrientLayout(Layout):
         for c in self.store.masters + self.store.slaves:
             c.restore()
         self.tiling = False
-        conn.flush()
+        xpybutil.conn.flush()
 
     def next_client(self):
         nxt = self._get_next()
@@ -199,7 +199,7 @@ class VerticalLayout(OrientLayout):
             for i, c in enumerate(self.store.slaves):
                 c.moveresize(x=sx, y=wy + i * sh, w=sw, h=sh)
 
-        conn.flush()
+        xpybutil.conn.flush()
 
 class HorizontalLayout(OrientLayout):
     def tile(self, save=True):
@@ -234,5 +234,5 @@ class HorizontalLayout(OrientLayout):
             for i, c in enumerate(self.store.slaves):
                 c.moveresize(x=wx + i * sw, y=sy, w=sw, h=sh)
 
-        conn.flush()
+        xpybutil.conn.flush()
 

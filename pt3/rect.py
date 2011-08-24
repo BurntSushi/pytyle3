@@ -1,6 +1,5 @@
 import xcb.xproto
 
-from xpybutil import conn, root
 import xpybutil.ewmh as ewmh
 import xpybutil.window as window
 
@@ -31,21 +30,21 @@ def update_workarea():
     mons = state.monitors # alias
     wa = mons[:]
 
-    clients = ewmh.get_client_list(conn, root).reply()
+    clients = ewmh.get_client_list().reply()
 
     log = [] # Identical struts should be ignored
 
     for c in clients:
         try:
-            cx, cy, cw, ch = window.get_geometry(conn, c)
+            cx, cy, cw, ch = window.get_geometry(c)
         except xcb.xproto.BadWindow:
             continue
 
         for i, (x, y, w, h) in enumerate(wa):
             if rect_intersect_area((x, y, w, h), (cx, cy, cw, ch)) > 0:
-                struts = ewmh.get_wm_strut_partial(conn, c).reply()
+                struts = ewmh.get_wm_strut_partial(c).reply()
                 if not struts:
-                    struts = ewmh.get_wm_strut(conn, c).reply()
+                    struts = ewmh.get_wm_strut(c).reply()
 
                 key = (cx, cy, cw, ch, struts)
                 if key in log:
