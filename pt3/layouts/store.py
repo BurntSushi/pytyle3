@@ -63,3 +63,4 @@ class Store(object):
         s = ['Masters: %s' % [str(c) for c in self.masters],
              'Slaves: %s' % [str(c) for c in self.slaves]]
         return '\n'.join(s)
+

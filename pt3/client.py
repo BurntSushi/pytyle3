@@ -1,5 +1,3 @@
-from functools import partial
-import sys
 import time
 
 import xcb.xproto
@@ -8,10 +6,8 @@ import xpybutil
 import xpybutil.event as event
 import xpybutil.ewmh as ewmh
 import xpybutil.icccm as icccm
-import xpybutil.keysym as keysym
 import xpybutil.util as util
 import xpybutil.window as window
-import xpybutil.xinerama as xinerama
 
 from debug import debug
 

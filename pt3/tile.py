@@ -1,15 +1,10 @@
-import sys
-import traceback
-
 import xpybutil
 import xpybutil.event as event
 import xpybutil.util as util
 
 from debug import debug
 
-import config
 import state
-import client
 from layouts import layouts
 
 tilers = {}

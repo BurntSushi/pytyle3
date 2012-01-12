@@ -11,7 +11,6 @@ if '--debug' in sys.argv:
     config.debug = True
 
 import pt3.state as state
-import pt3.keybind as keybind
 import pt3.tile as tile
 import pt3.client as client
 
