@@ -6,13 +6,13 @@ import xpybutil
 import xpybutil.event as event
 import xpybutil.ewmh as ewmh
 import xpybutil.icccm as icccm
+import xpybutil.rect as rect
 import xpybutil.util as util
 import xpybutil.window as window
 
 from debug import debug
 
 import config
-import rect
 import state
 import tile
 
@@ -94,8 +94,9 @@ class Client(object):
             if fullymaxed:
                 return
             
-        mnow = rect.get_monitor_area(window.get_geometry(self.wid))
-        mold = rect.get_monitor_area(self.saved_geom)
+        mnow = rect.get_monitor_area(window.get_geometry(self.wid),
+                                     state.monitors)
+        mold = rect.get_monitor_area(self.saved_geom, state.monitors)
 
         x, y, w, h = self.saved_geom
 

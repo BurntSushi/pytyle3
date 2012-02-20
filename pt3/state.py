@@ -4,12 +4,10 @@ import time
 import xpybutil
 import xpybutil.event as event
 import xpybutil.ewmh as ewmh
-import xpybutil.keysym as keysym
+import xpybutil.rect as rect
 import xpybutil.util as util
 import xpybutil.window as window
 import xpybutil.xinerama as xinerama
-
-import rect
 
 PYTYLE_STATE = 'startup'
 GRAB = None
@@ -50,7 +48,8 @@ def quit():
     sys.exit(0)
 
 def cb_property_notify(e):
-    global activewin, desk_num, desktop, monitors, root_geom, stacking, visibles
+    global activewin, desk_num, desktop, monitors, root_geom, \
+           stacking, visibles, workarea
 
     aname = util.get_atom_name(e.atom)
     if aname == '_NET_DESKTOP_GEOMETRY':
@@ -69,10 +68,10 @@ def cb_property_notify(e):
     elif aname == '_NET_CLIENT_LIST_STACKING':
         stacking = ewmh.get_client_list_stacking().reply()
     elif aname == '_NET_WORKAREA':
-        rect.update_workarea()
+        workarea = rect.monitor_rects(monitors)
 
 window.listen(xpybutil.root, 'PropertyChange')
 event.connect('PropertyNotify', xpybutil.root, cb_property_notify)
 
-rect.update_workarea()
+workarea = rect.monitor_rects(monitors)
 
