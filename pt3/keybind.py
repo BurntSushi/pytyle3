@@ -4,7 +4,7 @@ import sys
 
 # from xpybutil import conn, root 
 # import xpybutil.event as event 
-import xpybutil.keysym as keysym
+import xpybutil.keybind as keybind
 
 bindings = None
 
@@ -26,6 +26,6 @@ execfile(conffile)
 assert bindings is not None
 
 for key_string, fun in bindings.iteritems():
-    if not keysym.bind_global_key('KeyPress', key_string, fun):
+    if not keybind.bind_global_key('KeyPress', key_string, fun):
         print >> sys.stderr, 'Could not bind %s' % key_string
 
