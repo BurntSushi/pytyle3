@@ -33,7 +33,7 @@ class Client(object):
 
         # This connects to the parent window (decorations)
         # We get all resize AND move events... might be too much
-        self.parentid = util.get_parent_window(self.wid)
+        self.parentid = window.get_parent_window(self.wid)
         window.listen(self.parentid, 'StructureNotify')
         event.connect('ConfigureNotify', self.parentid, 
                       self.cb_configure_notify)
