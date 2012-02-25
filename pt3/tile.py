@@ -21,7 +21,8 @@ def debug_state():
 
 def cmd(action):
     def _cmd():
-        assert state.desktop in tilers
+        if state.desktop not in tilers:
+            return
 
         tiler, _ = get_active_tiler(state.desktop)
 
