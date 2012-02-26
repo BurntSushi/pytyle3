@@ -9,6 +9,8 @@ import xpybutil.util as util
 import xpybutil.window as window
 import xpybutil.xinerama as xinerama
 
+import config
+
 PYTYLE_STATE = 'startup'
 GRAB = None
 
@@ -36,6 +38,7 @@ while not _wmrunning:
 
 root_geom = ewmh.get_desktop_geometry().reply()
 monitors = xinerama.get_monitors()
+phys_monitors = xinerama.get_physical_mapping(monitors)
 desk_num = ewmh.get_number_of_desktops().reply()
 activewin = ewmh.get_active_window().reply()
 desktop = ewmh.get_current_desktop().reply()
@@ -47,14 +50,33 @@ def quit():
     print 'Exiting...'
     sys.exit(0)
 
+def update_workarea():
+    '''
+    We update the current workarea either by autodetecting struts, or by
+    using margins specified in the config file. Never both, though.
+    '''
+    global workarea
+
+    if config.use_margins:
+        workarea = monitors[:]
+        for physm, margins in enumerate(config.margins):
+            i = phys_monitors[physm]
+            mx, my, mw, mh = workarea[i]
+            workarea[i] = (mx + margins['left'], my + margins['top'],
+                           mw - (margins['left'] + margins['right']),
+                           mh - (margins['top'] + margins['bottom']))
+    else:
+        workarea = rect.monitor_rects(monitors)
+
 def cb_property_notify(e):
-    global activewin, desk_num, desktop, monitors, root_geom, \
+    global activewin, desk_num, desktop, monitors, phys_monitors, root_geom, \
            stacking, visibles, workarea
 
     aname = util.get_atom_name(e.atom)
     if aname == '_NET_DESKTOP_GEOMETRY':
         root_geom = ewmh.get_desktop_geometry().reply()
         monitors = xinerama.get_monitors()
+        phys_monitors = xinerama.get_physical_mapping(monitors)
     elif aname == '_NET_ACTIVE_WINDOW':
         activewin = ewmh.get_active_window().reply()
     elif aname == '_NET_CURRENT_DESKTOP':
@@ -68,10 +90,10 @@ def cb_property_notify(e):
     elif aname == '_NET_CLIENT_LIST_STACKING':
         stacking = ewmh.get_client_list_stacking().reply()
     elif aname == '_NET_WORKAREA':
-        workarea = rect.monitor_rects(monitors)
+        update_workarea()
 
 window.listen(xpybutil.root, 'PropertyChange')
 event.connect('PropertyNotify', xpybutil.root, cb_property_notify)
 
-workarea = rect.monitor_rects(monitors)
+update_workarea()
 
