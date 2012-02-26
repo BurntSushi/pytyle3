@@ -57,7 +57,7 @@ def update_workarea():
     '''
     global workarea
 
-    if config.use_margins:
+    if hasattr(config, 'use_margins') and config.use_margins:
         workarea = monitors[:]
         for physm, margins in enumerate(config.margins):
             i = phys_monitors[physm]
