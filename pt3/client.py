@@ -194,16 +194,19 @@ def update_clients():
 def track_client(client):
     assert client not in clients
 
-    if not should_ignore(client):
-        if state.PYTYLE_STATE == 'running':
-            # This is truly unfortunate and only seems to be necessary when
-            # a client comes back from an iconified state. This causes a slight
-            # lag when a new window is mapped, though.
-            time.sleep(0.2)
-        try:
+    try:
+        if not should_ignore(client):
+            if state.PYTYLE_STATE == 'running':
+                # This is truly unfortunate and only seems to be necessary when
+                # a client comes back from an iconified state. This causes a 
+                # slight lag when a new window is mapped, though.
+                time.sleep(0.2)
+
             clients[client] = Client(client)
-        except xcb.xproto.BadWindow:
-            untrack_client(client)
+    except xcb.xproto.BadWindow:
+        debug('Window %s was destroyed before we could finish inspecting it. '
+              'Untracking it...' % client)
+        untrack_client(client)
 
 def untrack_client(client):
     if client not in clients:
@@ -222,10 +225,13 @@ def should_ignore(client):
 
     wm_class = icccm.get_wm_class(client).reply()
     if wm_class is not None:
-        inst, cls = wm_class
-        if set([inst.lower(), cls.lower()]).intersection(config.ignore):
-            debug('Ignoring %s because it is in the ignore list' % nm)
-            return True
+        try:
+            inst, cls = wm_class
+            if set([inst.lower(), cls.lower()]).intersection(config.ignore):
+                debug('Ignoring %s because it is in the ignore list' % nm)
+                return True
+        except ValueError:
+            pass
 
     if icccm.get_wm_transient_for(client).reply() is not None:
         debug('Ignoring %s because it is transient' % nm)
