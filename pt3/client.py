@@ -227,15 +227,17 @@ def should_ignore(client):
     if wm_class is not None:
         try:
             inst, cls = wm_class
-            if set([inst.lower(), cls.lower()]).intersection(config.ignore):
+            matchNames = set([inst.lower(), cls.lower()])
+
+            if matchNames.intersection(config.ignore):
                 debug('Ignoring %s because it is in the ignore list' % nm)
                 return True
 
             if hasattr(config, 'tile_only') and config.tile_only:
-              if not set([inst.lower(), cls.lower()]).intersection(config.tile_only):
-                debug('Ignoring %s because it is not in the tile_only list' % nm)
+              if not matchNames.intersection(config.tile_only):
+                debug('Ignoring %s because it is not in the tile_only '
+                      'list' % nm)
                 return True
-
         except ValueError:
             pass
 

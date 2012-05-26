@@ -3,6 +3,10 @@
 # (case-insensitive)
 ignore = ['gmrun', 'krunner']
 
+# If this list is non-empty, only windows in the list will be tiled.
+# The matching algorithm is precisely the same as for 'ignore'.
+tile_only = []
+
 # How much to increment the master area proportion size
 proportion_change = 0.02
 
