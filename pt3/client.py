@@ -230,6 +230,12 @@ def should_ignore(client):
             if set([inst.lower(), cls.lower()]).intersection(config.ignore):
                 debug('Ignoring %s because it is in the ignore list' % nm)
                 return True
+
+            if hasattr(config, 'tile_only') and config.tile_only:
+              if not set([inst.lower(), cls.lower()]).intersection(config.tile_only):
+                debug('Ignoring %s because it is not in the tile_only list' % nm)
+                return True
+
         except ValueError:
             pass
 
