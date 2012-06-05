@@ -43,7 +43,7 @@ setup(
     url = 'https://github.com/BurntSushi/pytyle3',
     platforms = 'POSIX',
     packages = ['pt3', 'pt3/layouts'],
-    data_files = [('share/doc/pytyle3', ['README', 'LICENSE']),
+    data_files = [('share/doc/pytyle3', ['README', 'COPYING']),
                   ('/etc/xdg/pytyle3', 
                    ['config.py', 'keybind.py'])],
     scripts = ['pytyle3']
