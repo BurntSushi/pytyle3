@@ -113,6 +113,10 @@ class OrientLayout(Layout):
     # Begin private methods that should not be called by the user directly
 
     def _get_focused(self):
+        
+        if type(state.activewin) == list:
+            state.activewin = state.activewin[0]
+        
         if state.activewin not in client.clients:
             return None
 
