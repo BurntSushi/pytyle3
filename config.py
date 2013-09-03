@@ -20,7 +20,7 @@ proportion_change = 0.05
 # The format here is to have one set of margins for each active physical
 # head. They should be in the following order: Left to right, top to bottom.
 # Make sure to set 'use_margins' to True!
-use_margins = True
+use_margins = False
 margins = [ {'top': 0, 'bottom': 1, 'left': 0, 'right': 0} ]
 
 # Leave some empty space between windows
