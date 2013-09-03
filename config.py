@@ -1,5 +1,3 @@
-# This is a Python file, pay attention to the syntax and indentation
-
 # A list of windows to ignore... 
 # will search both the class and role of the WM_CLASS property
 # case-insensitive
