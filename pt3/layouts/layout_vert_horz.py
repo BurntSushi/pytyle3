@@ -32,7 +32,8 @@ class OrientLayout(Layout):
 
     def untile(self):
         for c in self.store.masters + self.store.slaves:
-            c.restore()
+			c.restore()
+
         self.tiling = False
         xpybutil.conn.flush()
 
@@ -63,6 +64,13 @@ class OrientLayout(Layout):
         if None not in (awin, prv):
             self.store.switch(awin, prv)
             self.tile()
+            
+    def rotate(self):
+		assert self.tiling
+		
+		self.store.slaves.insert(0,self.store.masters.pop(0)) # move the first master to slave
+		self.store.masters.append(self.store.slaves.pop(-1)) # move the last slave to master
+		self.tile()
 
     def clients(self):
         return self.store.masters + self.store.slaves
@@ -182,26 +190,29 @@ class VerticalLayout(OrientLayout):
         if not msize and not ssize:
             return
 
-        mx = wx
-        mw = int(ww * self.proportion)
+        mx = wx # left limit
+        mw = int(ww * self.proportion) # width of the master
         sx = mx + mw
         sw = ww - mw
+        g = config.gap # Gap between windows
 
         if mw <= 0 or mw > ww or sw <= 0 or sw > ww:
             return
-
+		
+#Masters
         if msize:
-            mh = wh / msize
+            mh = (wh - (msize + 1) * g) / msize # Height of each window
             mw = ww if not ssize else mw
-            for i, c in enumerate(self.store.masters):
-                c.moveresize(x=mx, y=wy + i * mh, w=mw, h=mh)
+            for i, c in enumerate(self.store.masters): # i is the number of the window in the list
+                c.moveresize(x=mx + g, y= g + wy + i * (mh + g), w=mw - 2 * g, h=mh)
 
+# Slaves
         if ssize:
-            sh = wh / ssize
+            sh = (wh - (ssize + 1) * g)/ ssize # Height of each window
             if not msize:
                 sx, sw = wx, ww
             for i, c in enumerate(self.store.slaves):
-                c.moveresize(x=sx, y=wy + i * sh, w=sw, h=sh)
+                c.moveresize(x=sx, y= g + wy + i * (sh + g), w=sw - g, h=sh)
 
         xpybutil.conn.flush()
 
@@ -221,22 +232,27 @@ class HorizontalLayout(OrientLayout):
         mh = int(wh * self.proportion)
         sy = my + mh
         sh = wh - mh
+        g = config.gap # Gap between windows
 
         if mh <= 0 or mh > wh or sh <= 0 or sh > wh:
             return
 
+# Masters
         if msize:
-            mw = ww / msize
+            #mw = ww / msize
+            mw = (ww - (msize + 1) * g) / msize # Height of each window
             mh = wh if not ssize else mh
             for i, c in enumerate(self.store.masters):
-                c.moveresize(x=wx + i * mw, y=my, w=mw, h=mh)
+                c.moveresize(x=g + wx + i * (g + mw), y=my + g, w=mw, h=mh - 2 * g)
 
+#Slaves
         if ssize:
-            sw = ww / ssize
+            #sw = ww / ssize
+            sw = (ww - (ssize + 1) * g) / ssize # Height of each window
             if not msize:
                 sy, sh = wy, wh
             for i, c in enumerate(self.store.slaves):
-                c.moveresize(x=wx + i * sw, y=sy, w=sw, h=sh)
+                c.moveresize(x= g + wx + i * (g + sw), y=sy, w=sw, h=sh - g)
 
         xpybutil.conn.flush()
 
