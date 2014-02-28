@@ -7,6 +7,9 @@ ignore = ['gmrun', 'qjackctl', 'viewnior', 'gnome-screenshot', 'mplayer', 'file-
 # The matching algorithm is precisely the same as for 'ignore'.
 tile_only = []
 
+# Whether to enable tiling on startup
+tile_on_startup = False
+
 # How much to increment the master area proportion size
 proportion_change = 0.05
 
