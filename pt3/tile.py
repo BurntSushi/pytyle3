@@ -50,6 +50,7 @@ def cycle_current_tiler():
     tiler.active = False
     tiler.tiling = False
     newtiler.active = True
+
     debug('Switching tiler from %s to %s on desktop %d' % (
            tiler.__class__.__name__, newtiler.__class__.__name__, 
            state.desktop))
