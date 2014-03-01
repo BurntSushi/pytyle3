@@ -7,6 +7,11 @@ from debug import debug
 import state
 from layouts import layouts
 
+try:
+    from config import tile_on_startup
+except ImportError:
+    tile_on_startup = False
+
 tilers = {}
 
 def debug_state():
@@ -97,6 +102,9 @@ def update_tilers():
                 t = lay(d)
                 tilers[d].append(t)
             tilers[d][0].active = True
+            if tile_on_startup:
+                tilers[d][0].tiling = True
+                tilers[d][0].tile()
     for d in tilers.keys():
         if d >= state.desk_num:
             debug('Removing tilers from desktop %d' % d)
