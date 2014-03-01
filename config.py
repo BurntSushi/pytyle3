@@ -10,6 +10,9 @@ tile_only = []
 # Whether to enable tiling on startup
 tile_on_startup = False
 
+# Whether floating windows are above tiled ones
+floats_above = True
+
 # How much to increment the master area proportion size
 proportion_change = 0.05
 
