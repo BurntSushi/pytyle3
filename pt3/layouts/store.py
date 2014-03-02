@@ -33,10 +33,6 @@ class Store(object):
             elif c in self.slaves:
                 self.slaves.remove(c)
 
-    def toggle_float(self, c):
-        self.remove(c)
-        self.add(c)
-    
     def reset(self):
         self.__init__()
 
@@ -72,6 +68,10 @@ class Store(object):
         else: # c1 in ss and c2 in ms
             i1, i2 = ss.index(c1), ms.index(c2)
             ss[i1], ms[i2] = ms[i2], ss[i1]
+
+    def toggle_float(self, c):
+        self.remove(c)
+        self.add(c)
 
     def __len__(self):
         return len(self.masters) + len(self.slaves)
