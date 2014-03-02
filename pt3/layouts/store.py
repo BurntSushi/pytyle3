@@ -1,4 +1,4 @@
-import config
+import pt3.config as config
 import xpybutil.ewmh as ewmh
 import xpybutil.util as util
 
