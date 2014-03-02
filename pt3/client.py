@@ -77,7 +77,8 @@ class Client(object):
 
     def restore(self):
         debug('Restoring %s' % self)
-
+        if config.tiles_below:
+            ewmh.request_wm_state_checked(self.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
         if self.saved_state:
             fullymaxed = False
             vatom = util.get_atom('_NET_WM_STATE_MAXIMIZED_VERT')

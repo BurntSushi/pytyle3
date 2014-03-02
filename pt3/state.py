@@ -48,6 +48,9 @@ workarea = []
 
 def quit():
     print 'Exiting...'
+    import tile
+    for tiler in tile.tilers:
+        tile.get_active_tiler(tiler)[0].untile()
     sys.exit(0)
 
 def update_workarea():

@@ -31,6 +31,7 @@ class OrientLayout(Layout):
             self.tile()
 
     def untile(self):
+        debug('Untiling %s' % (self))
         for c in self.store.masters + self.store.slaves:
 			c.restore()
 
