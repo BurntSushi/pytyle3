@@ -12,7 +12,7 @@ class Store(object):
             self.floats.append(c)
         else:
             if config.tiles_below:
-                ewmh.request_wm_state_checked(c.wid,2,util.get_atom('_NET_WM_STATE_BELOW')).check()
+                ewmh.request_wm_state_checked(c.wid,1,util.get_atom('_NET_WM_STATE_BELOW')).check()
             if len(self.masters) < self.mcnt:
                 if c in self.slaves:
                     self.slaves.remove(c)
@@ -81,3 +81,5 @@ class Store(object):
              'Slaves: %s' % [str(c) for c in self.slaves]]
         return '\n'.join(s)
 
+def __init__():
+    return

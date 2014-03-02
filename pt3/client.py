@@ -40,8 +40,6 @@ class Client(object):
 
         # A window should only be floating if that is default
         self.floating = config.floats_default
-        if not self.floating and config.tiles_below:
-            ewmh.request_wm_state_checked(self.wid,2,util.get_atom('_NET_WM_STATE_BELOW')).check()
 
         # Not currently in a "moving" state
         self.moving = False
