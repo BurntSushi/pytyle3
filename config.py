@@ -13,8 +13,8 @@ tile_on_startup = False
 # Whether tiled windows are below others
 tiles_below = True
 
-# Whether new windows should tile or float by default
-floats_default = True
+# Whether new windows should tile or float by default (default is False)
+floats_default = False
 
 # How much to increment the master area proportion size
 proportion_change = 0.05
