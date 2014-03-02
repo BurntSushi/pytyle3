@@ -1,27 +1,40 @@
+import config
+import xpybutil.ewmh as ewmh
+import xpybutil.util as util
+
 class Store(object):
     def __init__(self):
-        self.masters, self.slaves = [], []
+        self.masters, self.slaves, self.floats = [], [], []
         self.mcnt = 1 # Number of masters allowed
 
     def add(self, c, above=None):
-        if len(self.masters) < self.mcnt:
-            if c in self.slaves:
-                self.slaves.remove(c)
-            self.masters.append(c)
-        elif c not in self.slaves:
-            self.slaves.append(c)
+        if c.floating:
+            self.floats.append(c)
+        else:
+            if config.tiles_below:
+                ewmh.request_wm_state_checked(c.wid,1,util.get_atom('_NET_WM_STATE_BELOW')).check()
+            if len(self.masters) < self.mcnt:
+                if c in self.slaves:
+                    self.slaves.remove(c)
+                self.masters.append(c)
+            elif c not in self.slaves:
+                self.slaves.append(c)
 
     def remove(self, c):
-        if c in self.masters:
-            self.masters.remove(c)
-            if len(self.masters) < self.mcnt and self.slaves:
-                self.masters.append(self.slaves.pop(0))
-        elif c in self.slaves:
-            self.slaves.remove(c)
+        if c in self.floats:
+            self.floats.remove(c)
+        else:
+            if config.tiles_below:
+                ewmh.request_wm_state_checked(c.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
+            if c in self.masters:
+                self.masters.remove(c)
+                if len(self.masters) < self.mcnt and self.slaves:
+                    self.masters.append(self.slaves.pop(0))
+            elif c in self.slaves:
+                self.slaves.remove(c)
 
     def reset(self):
-        self.masters, self.slaves = [], []
-        self.mcnt = 1
+        self.__init__()
 
     def inc_masters(self, current=None):
         self.mcnt = min(self.mcnt + 1, len(self))
@@ -55,6 +68,10 @@ class Store(object):
         else: # c1 in ss and c2 in ms
             i1, i2 = ss.index(c1), ms.index(c2)
             ss[i1], ms[i2] = ms[i2], ss[i1]
+
+    def toggle_float(self, c):
+        self.remove(c)
+        self.add(c)
 
     def __len__(self):
         return len(self.masters) + len(self.slaves)

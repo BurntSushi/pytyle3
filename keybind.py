@@ -32,6 +32,7 @@ bindings = {
     'Control-Mod1-d': tile.cmd('add_master'),
 	'Control-Mod1-c': tile.cmd('rotate'),
     'Control-Mod1-h': tile.cmd('cycle'),
+    'Control-Mod1-f': tile.cmd('toggle_float'),
 
 # quit pytyle
     'Control-Mod1-q': state.quit,

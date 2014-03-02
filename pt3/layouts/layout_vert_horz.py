@@ -31,6 +31,7 @@ class OrientLayout(Layout):
             self.tile()
 
     def untile(self):
+        debug('Untiling %s' % (self))
         for c in self.store.masters + self.store.slaves:
 			c.restore()
 
@@ -118,6 +119,13 @@ class OrientLayout(Layout):
 
         self.store.masters[0].activate()
 
+    def toggle_float(self):
+        assert self.tiling
+
+        self._get_focused().floating = not self._get_focused().floating
+        self.store.toggle_float(self._get_focused())
+        self.tile()
+    
     # Begin private methods that should not be called by the user directly
 
     def _get_focused(self):
@@ -129,7 +137,7 @@ class OrientLayout(Layout):
             return None
 
         awin = client.clients[state.activewin]
-        if awin not in self.store.masters + self.store.slaves:
+        if awin not in self.store.masters + self.store.slaves + self.store.floats:
             return None
 
         return awin
