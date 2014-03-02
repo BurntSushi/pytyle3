@@ -81,5 +81,3 @@ class Store(object):
              'Slaves: %s' % [str(c) for c in self.slaves]]
         return '\n'.join(s)
 
-def __init__():
-    return
