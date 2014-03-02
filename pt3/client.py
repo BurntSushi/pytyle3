@@ -39,7 +39,7 @@ class Client(object):
                       self.cb_configure_notify)
 
         # A window should only be floating if specifically specified
-        self.floating = False
+        self.floating = config.floats_default
 
         # Not currently in a "moving" state
         self.moving = False
@@ -54,8 +54,8 @@ class Client(object):
         self.save()
 
     def remove(self):
-        if config.floats_above:
-            ewmh.request_wm_state_checked(self.wid,0,util.get_atom('_NET_WM_STATE_ABOVE')).check()
+        if config.tiles_below and not self.floating:
+            ewmh.request_wm_state_checked(self.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
         tile.update_client_removal(self)
         debug('Disconnecting from %s' % self)
         event.disconnect('ConfigureNotify', self.parentid)

@@ -8,32 +8,34 @@ class Store(object):
         self.mcnt = 1 # Number of masters allowed
 
     def add(self, c, above=None):
-        if len(self.masters) < self.mcnt:
-            if c in self.slaves:
-                self.slaves.remove(c)
-            self.masters.append(c)
-        elif c not in self.slaves:
-            self.slaves.append(c)
+        if c.floating:
+            self.floats.append(c)
+        else:
+            if config.tiles_below:
+                ewmh.request_wm_state_checked(c.wid,2,util.get_atom('_NET_WM_STATE_BELOW')).check()
+            if len(self.masters) < self.mcnt:
+                if c in self.slaves:
+                    self.slaves.remove(c)
+                self.masters.append(c)
+            elif c not in self.slaves:
+                self.slaves.append(c)
 
     def remove(self, c):
-        if c in self.masters:
-            self.masters.remove(c)
-            if len(self.masters) < self.mcnt and self.slaves:
-                self.masters.append(self.slaves.pop(0))
-        elif c in self.slaves:
-            self.slaves.remove(c)
+        if c in self.floats:
+            self.floats.remove(c)
+        else:
+            if config.tiles_below:
+                ewmh.request_wm_state_checked(c.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
+            if c in self.masters:
+                self.masters.remove(c)
+                if len(self.masters) < self.mcnt and self.slaves:
+                    self.masters.append(self.slaves.pop(0))
+            elif c in self.slaves:
+                self.slaves.remove(c)
 
     def toggle_float(self, c):
-        if c.floating:
-            self.remove(c)
-            self.floats.append(c)
-            if config.floats_above:
-                ewmh.request_wm_state_checked(c.wid,2,util.get_atom('_NET_WM_STATE_ABOVE')).check()
-        else:
-            if config.floats_above:
-                ewmh.request_wm_state_checked(c.wid,0,util.get_atom('_NET_WM_STATE_ABOVE')).check()
-            self.floats.remove(c)
-            self.add(c)
+        self.remove(c)
+        self.add(c)
     
     def reset(self):
         self.__init__()
