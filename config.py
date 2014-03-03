@@ -16,6 +16,9 @@ tiles_below = True
 # Whether new windows should tile or float by default (default is False)
 floats_default = False
 
+# Whether tiled windows should have their decorations removed
+remove_decorations = False
+
 # How much to increment the master area proportion size
 proportion_change = 0.05
 

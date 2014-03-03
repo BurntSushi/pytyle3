@@ -122,7 +122,6 @@ class OrientLayout(Layout):
     def toggle_float(self):
         assert self.tiling
 
-        self._get_focused().floating = not self._get_focused().floating
         self.store.toggle_float(self._get_focused())
         self.tile()
     

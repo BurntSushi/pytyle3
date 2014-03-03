@@ -1,6 +1,7 @@
 import pt3.config as config
 import xpybutil.ewmh as ewmh
 import xpybutil.util as util
+import xpybutil.motif as motif
 
 class Store(object):
     def __init__(self):
@@ -9,8 +10,14 @@ class Store(object):
 
     def add(self, c, above=None):
         if c.floating:
+            if config.remove_decorations:
+                motif.set_hints_checked(c.wid,2,decoration=1).check() # add decorations
+            if config.tiles_below:
+                ewmh.request_wm_state_checked(c.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
             self.floats.append(c)
         else:
+            if config.remove_decorations:
+                motif.set_hints_checked(c.wid,2,decoration=2).check() #remove decorations
             if config.tiles_below:
                 ewmh.request_wm_state_checked(c.wid,1,util.get_atom('_NET_WM_STATE_BELOW')).check()
             if len(self.masters) < self.mcnt:
@@ -24,8 +31,6 @@ class Store(object):
         if c in self.floats:
             self.floats.remove(c)
         else:
-            if config.tiles_below:
-                ewmh.request_wm_state_checked(c.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
             if c in self.masters:
                 self.masters.remove(c)
                 if len(self.masters) < self.mcnt and self.slaves:
@@ -71,6 +76,7 @@ class Store(object):
 
     def toggle_float(self, c):
         self.remove(c)
+        c.floating = not c.floating
         self.add(c)
 
     def __len__(self):

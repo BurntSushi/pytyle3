@@ -5,6 +5,7 @@ import xcb.xproto
 import xpybutil
 import xpybutil.event as event
 import xpybutil.ewmh as ewmh
+import xpybutil.motif as motif
 import xpybutil.icccm as icccm
 import xpybutil.rect as rect
 import xpybutil.util as util
@@ -54,8 +55,6 @@ class Client(object):
         self.save()
 
     def remove(self):
-        if config.tiles_below and not self.floating:
-            ewmh.request_wm_state_checked(self.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
         tile.update_client_removal(self)
         debug('Disconnecting from %s' % self)
         event.disconnect('ConfigureNotify', self.parentid)
@@ -77,6 +76,8 @@ class Client(object):
 
     def restore(self):
         debug('Restoring %s' % self)
+        if config.remove_decorations:
+            motif.set_hints_checked(self.wid,2,decoration=1).check()
         if config.tiles_below:
             ewmh.request_wm_state_checked(self.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
         if self.saved_state:
