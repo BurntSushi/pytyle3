@@ -14,7 +14,7 @@ tile_on_startup = False
 tiles_below = True
 
 # Whether new windows should tile or float by default (default is False)
-floats_default = False
+floats_default = True
 
 # Whether tiled windows should have their decorations removed
 remove_decorations = False

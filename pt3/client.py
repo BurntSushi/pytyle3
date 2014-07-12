@@ -40,7 +40,7 @@ class Client(object):
                       self.cb_configure_notify)
 
         # A window should only be floating if that is default
-        self.floating = config.floats_default
+        self.floating = getattr(config, 'floats_default', False)
 
         # Not currently in a "moving" state
         self.moving = False
