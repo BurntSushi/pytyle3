@@ -76,9 +76,9 @@ class Client(object):
 
     def restore(self):
         debug('Restoring %s' % self)
-        if config.remove_decorations:
+        if getattr(config, 'remove_decorations', False):
             motif.set_hints_checked(self.wid,2,decoration=1).check()
-        if config.tiles_below:
+        if getattr(config, 'tiles_below', False):
             ewmh.request_wm_state_checked(self.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
         if self.saved_state:
             fullymaxed = False

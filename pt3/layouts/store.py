@@ -10,15 +10,15 @@ class Store(object):
 
     def add(self, c, above=None):
         if c.floating:
-            if config.remove_decorations:
+            if getattr(config, 'remove_decorations', False):
                 motif.set_hints_checked(c.wid,2,decoration=1).check() # add decorations
-            if config.tiles_below:
+            if getattr(config, 'tiles_below', False):
                 ewmh.request_wm_state_checked(c.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
             self.floats.append(c)
         else:
-            if config.remove_decorations:
+            if getattr(config, 'remove_decorations', False):
                 motif.set_hints_checked(c.wid,2,decoration=2).check() #remove decorations
-            if config.tiles_below:
+            if getattr(config, 'tiles_below', False):
                 ewmh.request_wm_state_checked(c.wid,1,util.get_atom('_NET_WM_STATE_BELOW')).check()
             if len(self.masters) < self.mcnt:
                 if c in self.slaves:
