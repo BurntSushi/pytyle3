@@ -63,6 +63,8 @@ def update_workarea():
     if hasattr(config, 'use_margins') and config.use_margins:
         workarea = monitors[:]
         for physm, margins in enumerate(config.margins):
+            if physm == len(phys_monitors):
+                break
             i = phys_monitors[physm]
             mx, my, mw, mh = workarea[i]
             workarea[i] = (mx + margins['left'], my + margins['top'],
