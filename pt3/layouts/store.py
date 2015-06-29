@@ -16,6 +16,9 @@ class Store(object):
                 ewmh.request_wm_state_checked(c.wid,0,util.get_atom('_NET_WM_STATE_BELOW')).check()
             self.floats.append(c)
         else:
+            #restore window if maximized
+			#ewmh.request_wm_state_checked(c.wid,0,util.get_atom('_NET_WM_STATE_MAXIMIZED_VERT')).check()
+			#ewmh.request_wm_state_checked(c.wid,0,util.get_atom('_NET_WM_STATE_MAXIMIZED_HORZ')).check()
             if getattr(config, 'remove_decorations', False):
                 motif.set_hints_checked(c.wid,2,decoration=2).check() #remove decorations
             if getattr(config, 'tiles_below', False):

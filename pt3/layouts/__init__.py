@@ -25,8 +25,10 @@ class Layout(object):
         if not self.tiling and save:
             for c in self.clients():
                 c.save()
-                c.unmaximize()
+#                c.unmaximize()
 
+        for c in self.clients(): #unmaximize all windows while tiling
+            c.unmaximize()
         self.tiling = True
 
         return True
